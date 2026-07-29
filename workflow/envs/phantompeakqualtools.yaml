@@ -1,0 +1,15 @@
+name: phantompeakqualtools
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - phantompeakqualtools=1.2.2
+  - samtools=1.21
+  - r-base
+  - r-spp
+  - r-catools
+  - r-snow
+  - r-snowfall
+  - r-bitops
+  - gawk

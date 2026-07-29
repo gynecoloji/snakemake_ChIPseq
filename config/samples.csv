@@ -1,0 +1,7 @@
+sample_id,condition,replicate,input_control,igg_control,peak_mode,notes
+GSF2801-ChIPseq-OVCAR3-Control-Input_S3,Input,1,,,,Control input (control-only)
+GSF2801-ChIPseq-OVCAR3-Control-IP-cJun_S1,Ctrl_cJUN,1,GSF2801-ChIPseq-OVCAR3-Control-Input_S3,GSF2801-ChIPseq-OVCAR3-Control-IP-IgG_S2,narrow,Control cJUN
+GSF2801-ChIPseq-OVCAR3-Control-IP-IgG_S2,Ctrl_IgG,1,GSF2801-ChIPseq-OVCAR3-Control-Input_S3,,narrow,Control IgG
+GSF2801-ChIPseq-OVCAR3-3D-Input_S6,Input,1,,,,3D input (control-only)
+GSF2801-ChIPseq-OVCAR3-3D-IP-cJun_S4,3D_cJUN,1,GSF2801-ChIPseq-OVCAR3-3D-Input_S6,GSF2801-ChIPseq-OVCAR3-3D-IP-IgG_S5,narrow,3D cJUN
+GSF2801-ChIPseq-OVCAR3-3D-IP-IgG_S5,3D_IgG,1,GSF2801-ChIPseq-OVCAR3-3D-Input_S6,,narrow,3D IgG

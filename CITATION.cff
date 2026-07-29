@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this workflow, please cite it using these metadata."
+title: "snakemake_ChIPseq: a ChIP-seq peak-calling, consensus and QC Snakemake workflow"
+abstract: >-
+  A Snakemake workflow for ChIP-seq analysis: human Bowtie2 alignment, filtering
+  and blacklist removal, MACS2 peak calling against a matched input/IgG control
+  (per-sample narrow or broad mode), IP-over-input log2 signal tracks, reproducible
+  fixed-width consensus peaks with a fragment-count matrix, and a comprehensive QC
+  stage with an interactive HTML report.
+type: software
+authors:
+  - given-names: "Ji"
+    family-names: "Wang"
+    orcid: "https://orcid.org/0000-0003-3443-5857"
+repository-code: "https://github.com/gynecoloji/snakemake_ChIPseq"
+url: "https://github.com/gynecoloji/snakemake_ChIPseq"
+license: MIT
+keywords:
+  - ChIP-seq
+  - Snakemake
+  - MACS2
+  - consensus peaks
+  - epigenomics
+  - bioinformatics workflow
+# `version` + `date-released` are bumped automatically by release-please on each
+# release (via the annotations below) — do not edit them by hand.
+version: "0.1.0" # x-release-please-version
+date-released: "2026-07-14" # x-release-please-date

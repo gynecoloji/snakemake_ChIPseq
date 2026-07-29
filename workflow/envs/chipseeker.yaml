@@ -1,0 +1,18 @@
+name: chipseeker
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base>=4.3
+  - bioconductor-chipseeker
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-org.hs.eg.db
+  - bioconductor-clusterprofiler
+  - bioconductor-deseq2
+  - bioconductor-apeglm
+  - bioconductor-genomicranges
+  - bioconductor-rtracklayer
+  - r-ggplot2
+  - r-optparse
+  - r-pheatmap

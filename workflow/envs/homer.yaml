@@ -1,0 +1,10 @@
+name: homer
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - homer=4.11
+  - samtools=1.21
+  - bedtools=2.31.1
+  - perl

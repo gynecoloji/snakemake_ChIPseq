@@ -1,0 +1,32 @@
+# ChIP-seq peak calling (with matched input/IgG control) + consensus + QC +
+# downstream analysis — Snakemake Workflow Catalog entry point. A single
+# `snakemake --use-conda` builds every stage in dependency order (unified DAG).
+# Run a subset with the stage targets:
+#
+#   snakemake --use-conda --cores 20                  # everything
+#   snakemake --use-conda --cores 20 chipseq_all      # primary pipeline only
+#   snakemake --use-conda --cores 20 qc_all           # QC only (after primary)
+#   snakemake --use-conda --cores 20 downstream_all   # annotation/motifs/DB/overlap
+#
+# Reference genomes/annotation are provided by the user under ref/ (see README).
+
+from snakemake.utils import min_version
+
+min_version("8.0")
+
+
+configfile: "config/config.yaml"
+
+
+include: "rules/common.smk"
+include: "rules/chipseq.smk"
+include: "rules/qc.smk"
+include: "rules/downstream.smk"
+
+
+rule all:
+    input:
+        rules.chipseq_all.input,
+        rules.qc_all.input,
+        rules.downstream_all.input,
+    default_target: True

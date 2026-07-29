@@ -1,0 +1,5 @@
+sample_id,condition,replicate,input_control,igg_control,peak_mode,notes
+test_ctrl_1,Input,1,,,,input control (control-only)
+test_ctrl_2,H3K4me3,1,test_ctrl_1,,narrow,narrow IP (single replicate)
+test_trt_1,H3K27me3,1,test_ctrl_1,,broad,broad IP replicate 1
+test_trt_2,H3K27me3,2,test_ctrl_1,,broad,broad IP replicate 2
