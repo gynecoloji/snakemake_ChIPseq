@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2](https://github.com/gynecoloji/snakemake_ChIPseq/compare/v0.1.1...v0.1.2) (2026-07-30)
+
+
+### Fixed
+
+* skip differential binding for single-replicate contrasts DESeq2 needs &gt;=2 replicates per condition; contrasts that don't meet that are skipped with a warning. Shipped 1-replicate example now runs no DB; .test uses a 2-vs-2 design (also covers narrow+broad reproducibility); tube map regenerated. ([920dbca](https://github.com/gynecoloji/snakemake_ChIPseq/commit/920dbca9ec11d8348c9d9b6dd18e3a38b42cd92e))
+
 ## [0.1.1](https://github.com/gynecoloji/snakemake_ChIPseq/compare/v0.1.0...v0.1.1) (2026-07-29)
 
 
