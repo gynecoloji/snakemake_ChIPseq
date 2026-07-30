@@ -170,7 +170,9 @@ bigWigs:
   consensus set and a gene-body scale-regions metagene → `results/deeptools/`
 
 Differential-binding contrasts are set in `config.yaml` (`contrasts:`); leave the
-list empty to skip that step.
+list empty to skip that step. A contrast runs **only if both conditions have ≥2
+replicates** — single-replicate (1-vs-1) contrasts are skipped automatically
+(DESeq2 needs replicates), so the shipped 1-replicate example runs no DB.
 
 ## Requirements
 

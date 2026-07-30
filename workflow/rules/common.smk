@@ -7,6 +7,7 @@
 import pandas as pd
 import re
 import os
+import sys
 from itertools import combinations
 from snakemake.utils import validate
 
@@ -129,8 +130,23 @@ _bad_contrasts = [(c.get("name", "?"), c.get(k)) for c in CONTRASTS
 if _bad_contrasts:
     raise ValueError("config: contrasts reference unknown condition(s) "
                      f"{_bad_contrasts}; valid conditions with IP samples: {sorted(GROUPS)}")
-CONTRAST_NAMES   = [c["name"] for c in CONTRASTS]
-CONTRAST_BY_NAME = {c["name"]: c for c in CONTRASTS}
+
+# Differential binding requires replicates: DESeq2 has no within-group variance
+# to estimate dispersion from in a single-replicate design. Skip (don't run) any
+# contrast whose conditions do NOT both have >=2 IP replicates.
+def _contrast_replicated(c):
+    return len(GROUPS[c["condition_a"]]) >= 2 and len(GROUPS[c["condition_b"]]) >= 2
+
+RUNNABLE_CONTRASTS = [c for c in CONTRASTS if _contrast_replicated(c)]
+for c in CONTRASTS:
+    if not _contrast_replicated(c):
+        na, nb = len(GROUPS[c["condition_a"]]), len(GROUPS[c["condition_b"]])
+        print(f"[chipseq] skipping differential-binding contrast '{c['name']}' "
+              f"({c['condition_a']}={na} rep, {c['condition_b']}={nb} rep): "
+              f"DESeq2 needs >=2 replicates per condition.", file=sys.stderr)
+
+CONTRAST_NAMES   = [c["name"] for c in RUNNABLE_CONTRASTS]
+CONTRAST_BY_NAME = {c["name"]: c for c in RUNNABLE_CONTRASTS}
 
 # ── Output directories (all relative to the working dir) ────────────────
 RESULT_DIR             = "results"

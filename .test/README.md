@@ -14,15 +14,16 @@ exist only so the DAG resolves; nothing reads their contents. CI also runs a
 `snakemake -d .test -n` dry run against this case.
 
 The sample sheet deliberately exercises every code path: a **control-only** input,
-a **narrow** single-replicate IP, and a **broad** 2-replicate IP (so the IDR-,
-ratio-track- and both peak-mode rules all appear in the map). `config.yaml` also
-defines a differential-binding `contrast`, so the downstream stage (annotation,
-motifs, DESeq2, overlap, heatmaps) is covered too.
+a **narrow** 2-replicate IP condition, and a **broad** 2-replicate IP condition.
+So both peak modes, both IDR / reproducibility branches (narrow *and* broad),
+the input-control + ratio-track rules, and a runnable **2-vs-2 differential-binding
+contrast** all appear in the map — i.e. the QC and downstream stages (annotation,
+motifs, DESeq2, overlap, heatmaps) are fully covered.
 
 Contents:
 
 - `config/config.yaml` — ChIP-seq config (paths resolve under `.test/`)
-- `config/samples.csv` — 4 samples: 1 input, 1 narrow IP, 2 broad IP replicates
+- `config/samples.csv` — 5 samples: 1 input, 2 narrow IP reps (H3K4me3), 2 broad IP reps (H3K27me3)
 - `data/*.fastq.gz` — empty placeholder paired-end reads
 - `ref/*` — empty placeholder reference genomes / annotations / BEDs
 

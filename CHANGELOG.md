@@ -53,5 +53,7 @@ Initial ChIP-seq workflow, adapted from the `snakemake_ATACseq_spikein` template
   **peak-set overlap** (bedtools Jaccard matrix + heatmap), and **signal heatmaps /
   metagene** (deepTools peak-centered + gene-body). Adds `chipseeker` (R/Bioconductor)
   and `homer` conda envs (8 envs total) and a `contrasts` config parameter.
+  Differential binding runs only for contrasts with ≥2 replicates per condition;
+  single-replicate contrasts are skipped automatically (DESeq2 needs replicates).
 - Config schema (`workflow/schemas/config.schema.yaml`) with parameter validation,
   a Docker/Apptainer image, `.test/` catalog case, and CI (unit tests + dry runs).

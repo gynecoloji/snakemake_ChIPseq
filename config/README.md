@@ -98,10 +98,13 @@ contrasts:
     condition_b: "Ctrl_cJUN"
 ```
 
-Leave the list empty (`contrasts: []`) to skip differential binding. Replicates per
-condition are recommended — a 1-vs-1 contrast still runs but yields fold-changes with
-unreliable p-values. The other downstream analyses (peak annotation + GO, motif
-enrichment, peak overlap, signal heatmaps) need no configuration.
+Leave the list empty (`contrasts: []`) to skip differential binding. **A contrast
+runs only if both conditions have ≥2 replicates** — DESeq2 needs replicates to
+estimate dispersion, so single-replicate (1-vs-1) contrasts are automatically
+skipped with a warning rather than producing unreliable statistics. The shipped
+OVCAR3 example has one replicate per condition, so `contrasts` is empty there. The
+other downstream analyses (peak annotation + GO, motif enrichment, peak overlap,
+signal heatmaps) run regardless of replicate count and need no configuration.
 
 ## Parameters (`config/config.yaml`)
 

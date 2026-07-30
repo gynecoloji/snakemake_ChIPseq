@@ -4,8 +4,9 @@
 #
 # log2FoldChange > 0 => higher binding in condition A. Significant peaks are
 # annotated to genes with ChIPseeker. Driven by Snakemake's `script:` directive.
-# NOTE: DESeq2 needs replicates for proper dispersion estimation; a 1-vs-1
-# contrast still runs but yields fold-changes with unreliable p-values.
+# NOTE: contrasts are pre-filtered in common.smk to those with >=2 replicates per
+# condition (DESeq2 needs replicates for dispersion), so this only runs on
+# adequately-replicated designs.
 
 suppressMessages({
   library(DESeq2)

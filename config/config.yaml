@@ -49,12 +49,15 @@ keep_chroms_regex: "^chr([1-9]|1[0-9]|2[0-2]|X)$"   # primary autosomes + chrX
 
 # ── Downstream analysis (workflow/rules/downstream.smk) ─────────────────
 # Differential-binding contrasts (DESeq2 over the consensus count matrix). Each
-# entry compares two conditions from samples.csv. Leave empty ([]) to skip.
-# Replicates per condition are recommended (1-vs-1 runs but gives fold-change only).
-contrasts:
-  - name: cJUN_3D_vs_Ctrl
-    condition_a: "3D_cJUN"
-    condition_b: "Ctrl_cJUN"
+# entry compares two conditions from samples.csv. A contrast runs ONLY if BOTH
+# conditions have >=2 replicates (DESeq2 needs replicates); under-replicated
+# contrasts are skipped with a warning. The shipped OVCAR3 example has a single
+# replicate per condition, so no contrast is set. With replicates, add e.g.:
+# contrasts:
+#   - name: cJUN_3D_vs_Ctrl
+#     condition_a: "3D_cJUN"     # test (numerator): log2FC > 0 = higher here
+#     condition_b: "Ctrl_cJUN"   # reference (denominator)
+contrasts: []
 
 # ── QC pipeline (workflow/rules/qc.smk) ─────────────────────────────────
 gtf: "ref/gencode.v36.annotation.gtf"          # for TSS-signal QC (chr-prefixed GENCODE)

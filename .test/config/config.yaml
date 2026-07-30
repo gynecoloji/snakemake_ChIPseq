@@ -29,8 +29,9 @@ idr_top_n_peaks: 150000
 keep_chroms_regex: "^chr([1-9]|1[0-9]|2[0-2]|X)$"
 
 # ── Downstream analysis ─────────────────────────────────────────────────
+# Both conditions have 2 replicates, so this contrast is runnable.
 contrasts:
-  - name: K27_vs_K4
+  - name: H3K27me3_vs_H3K4me3
     condition_a: "H3K27me3"
     condition_b: "H3K4me3"
 
