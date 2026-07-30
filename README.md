@@ -1,4 +1,4 @@
-[![CI](https://github.com/gynecoloji/snakemake_ChIPseq/actions/workflows/ci.yml/badge.svg)](https://github.com/gynecoloji/snakemake_ChIPseq/actions/workflows/ci.yml)
+[![CI](https://github.com/gynecoloji/snakemake_ChIPseq/actions/workflows/ci.yml/badge.svg)](https://github.com/gynecoloji/snakemake_ChIPseq/actions/workflows/ci.yml) [![Docker Hub](https://img.shields.io/docker/pulls/gynecoloji/chipseq-pipeline?logo=docker&label=docker%20pulls)](https://hub.docker.com/r/gynecoloji/chipseq-pipeline)
 
 # ChIP-seq Analysis Pipeline
 
@@ -356,8 +356,23 @@ docker run --rm -v "$(pwd)":/workflow -e HOME=/tmp --user "$(id -u):$(id -g)" \
 docker compose run --rm chipseq --cores 16 qc_all
 ```
 
-On HPC without Docker, convert the image to a SIF once and run with Apptainer
-(see [`DOCKER.md`](DOCKER.md)).
+**Apptainer / Singularity (HPC).** The image is published to Docker Hub as a **SIF
+(ORAS artifact)**, so pull it directly — no Docker needed — or build it locally from
+[`apptainer.def`](apptainer.def):
+
+```bash
+# One-time: pull the prebuilt SIF (ORAS artifact), or build it from the definition
+apptainer pull chipseq-pipeline.sif oras://docker.io/gynecoloji/chipseq-pipeline:latest
+# ...or:  apptainer build --fakeroot chipseq-pipeline.sif apptainer.def
+
+# Run from your project directory (Apptainer auto-mounts the CWD):
+apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8            # everything
+apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8 qc_all     # just one stage
+```
+
+Because the Docker Hub image is a SIF, `docker pull` won't work on that tag — for the
+Docker path, build locally with `docker build` above. See [`DOCKER.md`](DOCKER.md) for
+the full guide.
 
 ## Deploying with snakedeploy
 

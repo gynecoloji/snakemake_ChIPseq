@@ -1,0 +1,81 @@
+# Native Apptainer build of the ChIP-seq workflow image (for HPC without Docker):
+#   module load apptainer
+#   apptainer build --fakeroot chipseq-pipeline.sif apptainer.def   # from repo root
+#   apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8
+#
+# Ships Snakemake plus the 8 pre-built per-rule conda envs at /opt/wf-conda (the
+# workflow runs one env per rule because its tools need incompatible Pythons:
+# idr=3.6, macs2=3.7, snakemake/deeptools=3.12). Mirrors the Dockerfile.
+# Genomes/FASTQs are NOT baked in: bind-mount your project at runtime.
+
+Bootstrap: docker
+From: condaforge/miniforge3:latest
+
+%files
+    workflow /workflow/
+    config /workflow/
+    tests /workflow/
+    create_envs.smk /workflow/
+
+%post
+    set -eu
+    export DEBIAN_FRONTEND=noninteractive
+    export WF_CONDA_PREFIX=/opt/wf-conda
+
+    # When built rootless (user not in /etc/subuid, so no real --fakeroot), apt's
+    # privilege-dropping sandbox fails ("setgroups/seteuid: Operation not permitted").
+    # Disable it so apt runs as the namespace root. Harmless under a real-root build.
+    printf 'APT::Sandbox::User "root";\n' > /etc/apt/apt.conf.d/01-no-sandbox
+
+    apt-get update
+    apt-get install -y --no-install-recommends git procps ca-certificates
+    rm -rf /var/lib/apt/lists/*
+
+    # Flexible channel priority: the env files are fully-pinned exports whose exact
+    # builds come from a mix of conda-forge/bioconda/defaults. Accept Anaconda ToS
+    # so the non-interactive solve doesn't stall.
+    conda config --system --set channel_priority flexible
+    conda tos accept --override-channels \
+        --channel https://repo.anaconda.com/pkgs/main \
+        --channel https://repo.anaconda.com/pkgs/r 2>/dev/null || true
+
+    # Snakemake driver in its OWN env (miniforge base pins Python 3.13, but
+    # snakemake-minimal 9.3.2 needs Python <3.13; pandas is imported at parse time).
+    mamba create -y -n driver -c conda-forge -c bioconda \
+        python=3.12 snakemake-minimal=9.3.2 pandas
+    mamba clean -afy
+    export PATH=/opt/conda/envs/driver/bin:$PATH
+
+    # Pre-build the 8 per-rule conda envs INTO the image (reused at runtime via
+    # the same --conda-prefix, since Snakemake keys envs by envs/*.yaml content).
+    cd /workflow
+    snakemake -s create_envs.smk --use-conda --conda-create-envs-only \
+        --conda-frontend mamba --conda-prefix "$WF_CONDA_PREFIX" --cores 1
+    mamba clean -afy
+    rm -rf /workflow/build /workflow/.snakemake
+
+%environment
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+    export WF_CONDA_PREFIX=/opt/wf-conda
+    export PATH=/opt/conda/envs/driver/bin:$PATH
+
+%runscript
+    exec snakemake --use-conda --conda-frontend mamba \
+        --conda-prefix /opt/wf-conda "$@"
+
+%labels
+    org.opencontainers.image.title chipseq-snakemake
+    org.opencontainers.image.description ChIP-seq peak calling (input control) + consensus/IDR + QC + downstream (Snakemake, --use-conda)
+    org.opencontainers.image.source https://github.com/gynecoloji/snakemake_ChIPseq
+
+%help
+    ChIP-seq Snakemake workflow (Bowtie2 -> MACS2 narrow/broad -> IDR/consensus ->
+    QC -> differential binding / annotation / motifs).
+
+    Run from your project directory (Apptainer auto-mounts the CWD):
+      apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8
+      apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8 qc_all
+      apptainer run chipseq-pipeline.sif -s workflow/Snakefile --cores 8 downstream_all
+
+    Reference genome/annotation/blacklist must be present under ref/ (see config/).
